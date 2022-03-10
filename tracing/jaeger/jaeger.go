@@ -2,7 +2,7 @@ package jaeger
 
 import (
 	"context"
-	"github.com/tal-tech/go-zero/core/logx"
+	"github.com/yunduansing/gocommon/logger"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
@@ -10,6 +10,7 @@ import (
 	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.7.0"
 	"go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 	"os"
 )
 
@@ -40,7 +41,7 @@ func tracerProvider(url, serviceName, environment, id string) (*tracesdk.TracerP
 func NewJaeger(ctx context.Context, url, serviceName, environment, id string) {
 	tp, err := tracerProvider(url, serviceName, environment, id)
 	if err != nil {
-		logx.Error(err)
+		logger.Error("NewJaeger", zap.Error(err))
 		return
 	}
 
@@ -55,7 +56,7 @@ func NewJaeger(ctx context.Context, url, serviceName, environment, id string) {
 
 	}
 	if err := tp.Shutdown(ctx); err != nil {
-		logx.Error(err)
+		logger.Error("Jaeger", zap.Error(err))
 	}
 	cancel()
 }

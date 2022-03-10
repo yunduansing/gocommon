@@ -2,10 +2,11 @@ package kafka
 
 import (
 	"context"
+	"fmt"
 	"github.com/Shopify/sarama"
-	"github.com/tal-tech/go-zero/core/logx"
+	"github.com/yunduansing/gocommon/gen"
+	"github.com/yunduansing/gocommon/logger"
 	"log"
-	"messageservice/common/gen"
 	"os"
 	"os/signal"
 	"sync"
@@ -159,7 +160,7 @@ func (k *KafkaStub) SendMessageAsync(ctx context.Context, topic, content string)
 		case _ = <-k.sender.Successes():
 		case e := <-k.sender.Errors():
 			if e != nil {
-				logx.Errorf("[Producer] err:%v msg:%+v \n", e.Msg, e.Err)
+				logger.Error(fmt.Sprintf("[Producer] err:%v msg:%+v \n", e.Msg, e.Err))
 			}
 		}
 	}()

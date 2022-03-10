@@ -2,7 +2,6 @@ package workqueue
 
 import (
 	"context"
-	"github.com/tal-tech/go-zero/core/logx"
 	"github.com/yunduansing/gocommon/logger"
 	"go.uber.org/zap"
 	"os"
@@ -38,7 +37,7 @@ var (
 
 // Start 开启定时任务
 func Start(ctx context.Context) {
-	logx.Info("start work...")
+	logger.Info("start work...")
 	worker = newWorkQueue()
 	go worker.run()
 	sig := make(chan os.Signal, 1)

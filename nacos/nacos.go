@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"gatewayservice/common/httputils"
-	"gatewayservice/common/logger"
+	"github.com/yunduansing/gocommon/httputils"
+	"github.com/yunduansing/gocommon/logger"
 	"go.uber.org/zap"
 	"net/http"
 )

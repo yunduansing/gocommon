@@ -6,11 +6,17 @@ import (
 	"go.uber.org/zap"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 )
 
 type workQueue struct {
-	task chan func()
+	task    chan func()
+	size    int
+	cap     int
+	running int
+	wg      sync.WaitGroup
+	cond    sync.Cond
 }
 
 func (w *workQueue) submit(t func()) {

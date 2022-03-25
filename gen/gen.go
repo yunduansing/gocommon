@@ -15,18 +15,13 @@ func UUID() string {
 }
 
 var (
-	snowflake         = newSnowflake()
-	numbers           = "0123456789"
-	lowerLetter       = "abcdefghijklmnopqrstuvwxyz0123456789"
-	capitalLetter     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	capitalLetterBase = []byte(capitalLetter)
-	letterNum         = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	snowflake = newSnowflake()
 )
 
 func newSnowflake() *sonyflake.Sonyflake {
-	startTime, _ := time.ParseInLocation("2006-01-02", "2021-12-01", time.Local)
+	//startTime, _ := time.ParseInLocation("2006-01-02", "2021-12-01", time.Local)
 
-	snowflake := sonyflake.NewSonyflake(sonyflake.Settings{StartTime: startTime})
+	snowflake := sonyflake.NewSonyflake(sonyflake.Settings{StartTime: time.Now()})
 	if snowflake == nil {
 		panic("创建snowflake失败, snowflake实例为nil")
 	}
@@ -37,6 +32,45 @@ func newSnowflake() *sonyflake.Sonyflake {
 // SnowflakeID 生成雪花ID
 func SnowflakeID() (uint64, error) {
 	return snowflake.NextID()
+}
+
+var (
+	startTime, _                      = time.ParseInLocation("2006-01-02", "2021-12-01", time.Local)
+	core         *sonyflake.Sonyflake = sonyflake.NewSonyflake(sonyflake.Settings{
+		MachineID: func() (uint16, error) {
+			return 0, nil
+		},
+		CheckMachineID: func(u uint16) bool {
+			return u == 0
+		},
+	})
+)
+
+func Init(serviceName string, serviceId uint64) {
+	var v int64 = 1
+	for k, c := range serviceName {
+		v = v * int64(c) * int64(k+1)
+	}
+	id := uint16(v + int64(serviceId))
+	core = sonyflake.NewSonyflake(sonyflake.Settings{
+		StartTime: time.Now(),
+		MachineID: func() (uint16, error) {
+			return id, nil
+		},
+		CheckMachineID: func(u uint16) bool {
+			return u == id
+		},
+	})
+}
+
+func Int64() int64 {
+	id, _ := core.NextID()
+	return int64(id)
+}
+
+func Uint64() uint64 {
+	id, _ := core.NextID()
+	return id
 }
 
 // ByteToString String and []byte buffers may converted without memory allocations

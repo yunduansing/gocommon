@@ -1,26 +1,30 @@
 package workqueue
 
 import (
-	"context"
-	"github.com/yunduansing/gocommon/logger"
-	"go.uber.org/zap"
-	"os"
-	"os/signal"
+	"math"
 	"sync"
-	"syscall"
+	"sync/atomic"
+)
+
+var (
+	defaultWorkerSize int32 = math.MaxInt32
 )
 
 type workQueue struct {
 	task    chan func()
-	size    int
-	cap     int
-	running int
+	size    int32
+	cap     int32
+	running int32
 	wg      sync.WaitGroup
 	cond    sync.Cond
 }
 
+type Option struct {
+}
+
 func (w *workQueue) submit(t func()) {
 	w.task <- t
+	atomic.AddInt32(&w.running, 1)
 }
 
 func (w *workQueue) run() {
@@ -34,25 +38,9 @@ func (w *workQueue) close() {
 }
 
 func newWorkQueue() *workQueue {
-	return &workQueue{task: make(chan func())}
+	return &workQueue{task: make(chan func()), cap: defaultWorkerSize}
 }
 
-var (
-	worker *workQueue
-)
-
-// Start 开启定时任务
-func Start(ctx context.Context) {
-	logger.Info("start work...")
-	worker = newWorkQueue()
-	go worker.run()
-	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, syscall.SIGTERM, syscall.SIGINT)
-	select {
-	case <-ctx.Done():
-		logger.Info("", zap.String("info", "work queue terminating by context canceled"))
-	case <-sig:
-		logger.Info("", zap.String("info", "work queue terminating via signal"))
-	}
-	worker.close()
+func newWorkQueueWith(cap int32, options ...Option) *workQueue {
+	return &workQueue{task: make(chan func()), cap: cap}
 }

@@ -3,6 +3,7 @@ package yaml
 import (
 	"github.com/yunduansing/gocommon/logger"
 	"go.uber.org/zap"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 )
 

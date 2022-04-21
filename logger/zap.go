@@ -9,30 +9,73 @@ import (
 
 var Logger *zap.Logger
 
+type zapLog struct {
+	*zap.Logger
+}
+
+func newZapLog(c Config) *zapLog {
+	log := getLogWriter()
+	return &zapLog{log}
+}
+
+func (log zapLog) Info(v ...interface{}) {
+
+}
+func (log zapLog) Infof(format string, v ...interface{}) {
+
+}
+func (log zapLog) Error(v ...interface{}) {
+
+}
+func (log zapLog) Errorf(format string, v ...interface{}) {
+
+}
+func (log zapLog) Panic(v ...interface{}) {
+
+}
+func (log zapLog) Panicf(format string, v ...interface{}) {
+
+}
+func (log zapLog) Warn(v ...interface{}) {
+
+}
+func (log zapLog) Warnf(format string, v ...interface{}) {
+
+}
+func (log zapLog) Debug(v ...interface{}) {
+
+}
+func (log zapLog) Debugf(format string, v ...interface{}) {
+
+}
+
 func InitLogger() {
 	Logger = getLogWriter()
-	//Logger = _logger.Sugar()
 }
 
-func Info(summary string, fields ...zap.Field) {
-	Logger.Info(summary, fields...)
-}
-
-func Error(summary string, fields ...zap.Field) {
-	Logger.Error(summary, fields...)
-}
-
-func Debug(summary string, fields ...zap.Field) {
-	Logger.Debug(summary, fields...)
-}
-
-func Fatal(summary string, fields ...zap.Field) {
-	Logger.Fatal(summary, fields...)
-}
-
-func Warn(summary string, fields ...zap.Field) {
-	Logger.Warn(summary, fields...)
-}
+//func Info(summary string, fields ...zap.Field) {
+//	Logger.Info(summary, fields...)
+//}
+//
+//func Error(summary string, fields ...zap.Field) {
+//	Logger.Error(summary, fields...)
+//}
+//
+//func Debug(summary string, fields ...zap.Field) {
+//	Logger.Debug(summary, fields...)
+//}
+//
+//func Fatal(summary string, fields ...zap.Field) {
+//	Logger.Fatal(summary, fields...)
+//}
+//
+//func Warn(summary string, fields ...zap.Field) {
+//	Logger.Warn(summary, fields...)
+//}
+//
+//func Panic(summary string, fields ...zap.Field) {
+//	Logger.Panic(summary, fields...)
+//}
 
 func getEncoder() zapcore.Encoder {
 	encoderConfig := zap.NewProductionEncoderConfig()

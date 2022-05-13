@@ -8,34 +8,34 @@ import (
 )
 
 type RedisCli struct {
-	*redis.Client
+	redis.UniversalClient
+}
+
+func (r *RedisCli) Get(ctx context.Context, key string) (res string, err error) {
+	res, err = r.UniversalClient.Get(ctx, key).Result()
+	return
 }
 
 type Config struct {
-	Host     string
-	Port     int
-	DB       int
-	Password string
+	Addrs            []string
+	DB               int
+	UserName         string
+	Password         string
+	MasterName       string //when redis sentinel
+	SentinelPassword string //when redis sentinel
 }
 
-func New(c *Config) *RedisCli {
+func New(c Config) *RedisCli {
 	var r = new(RedisCli)
-	r.Client = redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", c.Host, c.Port),
-		DB:       c.DB, // use default DB
-		Password: c.Password,
+	rdb := redis.NewUniversalClient(&redis.UniversalOptions{
+		Addrs:            c.Addrs,
+		DB:               c.DB,
+		Username:         c.UserName,
+		Password:         c.Password,
+		SentinelPassword: c.SentinelPassword,
+		MasterName:       c.MasterName,
 	})
-	return r
-}
-
-func NewByS(addr, password string) *RedisCli {
-	var r = new(RedisCli)
-	r.Client = redis.NewClient(&redis.Options{
-		Addr:     addr,
-		DB:       0, // use default DB
-		PoolSize: 100,
-		Password: password,
-	})
+	r.UniversalClient = rdb
 	return r
 }
 

@@ -14,7 +14,7 @@ require (
 	golang.org/x/crypto v0.0.0-20220307211146-efcb8507fb70
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	gorm.io/driver/mysql v1.3.2
-	gorm.io/gorm v1.23.2
+	gorm.io/gorm v1.23.4
 )
 
 require (
@@ -51,4 +51,5 @@ require (
 	golang.org/x/sys v0.0.0-20220328115105-d36c6a25d886 // indirect
 	google.golang.org/protobuf v1.26.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
+	gorm.io/plugin/dbresolver v1.2.0 // indirect
 )
